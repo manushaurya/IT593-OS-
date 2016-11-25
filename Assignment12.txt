@@ -1,0 +1,68 @@
+code for reading data:
+
+#include<unistd.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include<string.h>
+#include<fcntl.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+int main()
+{
+int pipe_fd;
+int res;
+int s=0;
+char buffer[1024];
+printf("Enter data\n");
+fgets(buffer,1024,stdin);
+res = mkfifo("fifo3", 0777);
+printf("Process %d opening FIFO O_WRONLY\n", getpid());
+pipe_fd=open("fifo3",O_WRONLY);
+printf("Process %d result %d\n", getpid(), pipe_fd);
+res=write(pipe_fd, buffer, sizeof(buffer));
+(void)close(pipe_fd);
+unlink("fifo3");
+printf("Process %d finished\n", getpid());
+exit(EXIT_SUCCESS);
+}
+********************************************************
+program for writing data:
+
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+int main()
+{
+int fd;
+int r,l;
+char buffer[1024];
+printf("Process %d opening FIFO O_RDONLY\n", getpid());
+fd=open("fifo3",O_RDONLY);
+printf("Process %d result %d\n",getpid(),fd);
+r=read(fd, buffer, sizeof(buffer));
+l=strlen(buffer)-1;
+(void)close(fd);
+unlink("fifo3");
+printf("Process %d finished, with reading %s of %d bytes\n",
+getpid(),buffer,l);
+exit(EXIT_SUCCESS);
+}
+************************************************************
+output for writing:
+----------------------
+Enter data
+abc
+Process 4357 opening FIFO O_WRONLY
+13Process 4357 result 3
+Process 4357 finished
+
+output for reading:
+-------------------------
+Process 4438 opening FIFO O_RDONLY
+Process 4438 result 3
+Process 4438 finished, with reading abc
+ of 3 bytes

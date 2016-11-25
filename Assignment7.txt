@@ -1,0 +1,30 @@
+Source Code:
+
+read m
+read n
+while ((m<=n))
+do
+f=0
+for ((j=2; j<m; j++))
+do
+u=`expr $m % $j`
+if [ $u -eq 0 ]
+then
+f=1
+fi
+done
+if [ $f -eq 0 ]
+then
+echo "$m is prime"
+fi
+m=`expr $m + 1`
+done
+
+Output:
+
+2
+9
+2 is prime
+3 is prime
+5 is prime
+7 is prime

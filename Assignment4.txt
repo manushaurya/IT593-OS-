@@ -1,0 +1,63 @@
+SOURCE CODE:
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<sys/types.h>
+#include<pthread.h>
+void *string(void *arg1);
+int i=0,j=0;
+int main() {
+        int res[5];
+        pthread_t tid1[5];
+        void *res1[5];
+        for(i=0;i<5;i++) {
+                res[i]=pthread_create(&tid1[i],NULL,(void *)string,(void *)(i+1));
+                if(res[i]!=0) {
+                        perror("Thread creation failed");
+                        exit(EXIT_FAILURE);
+                }
+                sleep(1);
+        }
+        for(j=4;j>=0;j--) {
+                res[j]=pthread_join(tid1[j],&res1[j]);
+                printf("%s = %d\n\n",(char *)res1[j],(j+1));
+                sleep(1);
+        }
+        exit(EXIT_SUCCESS);
+}
+void *string(void *arg) {
+        printf("\tThe thread is running = %d \n\tThread ID = %u\n\tProcess ID = %d\n\n",arg,(unsigned int)pthread_self(),getpid());
+        pthread_exit("\tThread Killed");
+}
+
+OUTPUT:
+
+        The thread is running = 1
+        Thread ID = 3078191984
+        Process ID = 2993
+
+        The thread is running = 2
+        Thread ID = 3068132208
+        Process ID = 2993
+
+        The thread is running = 3
+        Thread ID = 3059739504
+        Process ID = 2993
+
+        The thread is running = 4
+        Thread ID = 3051346800
+        Process ID = 2993
+
+        The thread is running = 5
+        Thread ID = 3042954096
+        Process ID = 2993
+
+        Thread Killed = 5
+
+        Thread Killed = 4
+
+        Thread Killed = 3
+
+        Thread Killed = 2
+
+        Thread Killed = 1

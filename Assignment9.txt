@@ -1,0 +1,18 @@
+Source Code :
+
+read j
+i=`who | grep -wc "$j"`
+if [ $i -ge 1 ]
+ then
+   echo "User has logged in"
+else
+  echo "User has logged off"
+fi
+
+Output :
+
+13000214060
+User has logged in
+
+13000214029
+User has logged off

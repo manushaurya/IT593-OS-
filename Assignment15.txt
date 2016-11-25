@@ -1,0 +1,44 @@
+Assignment 15:
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+void sigint() {
+        signal(SIGINT,sigint);
+        printf("CHILD: Signal SIGINT, Interrupted\n");
+}
+void sigquit() {
+        printf("CHILD: Signal SIGQUIT, Killed\n");
+        exit(0);
+}
+int main() {
+        int pid;
+        if ((pid = fork()) < 0) {
+                perror("fork");
+                exit(1);
+        }
+        if (pid == 0) {
+                signal(SIGINT,sigint);
+                signal(SIGQUIT, sigquit);
+                for(;;);
+        } else {
+                printf("\nPARENT: sending SIGINT\n\n");
+sigint();
+                kill(pid,SIGINT);
+                sleep(3);
+                printf("\nPARENT: Sending SIGQUIT\n\n");
+sigquit();
+                kill(pid,SIGQUIT);
+                sleep(3);
+        }
+}
+
+**********************************************************************
+output:
+PARENT: sending SIGINT
+
+CHILD: Signal SIGINT, Interrupted
+
+PARENT: Sending SIGQUIT
+
+CHILD: Signal SIGQUIT, Killed

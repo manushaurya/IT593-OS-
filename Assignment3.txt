@@ -1,0 +1,89 @@
+Source Code:
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<sys/types.h>
+#include<pthread.h>
+int sum(int arg1);
+int sum1=0;
+int main()
+{
+int res2;
+pthread_t tid2;
+void *result2;
+printf("\nThread ID=%u",(unsigned int)pthread_self());
+printf("\nThe process ID=%d",getpid());
+printf("\nThe parent process ID=%d",getppid());
+res2=pthread_create(&tid2,NULL,(void *)sum,(int *)sum1);
+if(res2!=0)
+{
+perror("Thread joined fail");
+exit(EXIT_FAILURE);
+}
+sleep(15);
+printf("\n The sum of two number is=%d",sum1);
+printf("\n waiting for thread to finish..........\n");
+res2=pthread_join(tid2,&result2);
+if(res2!=0)
+{
+perror("Thread joined failed");
+exit(EXIT_FAILURE);
+}
+printf("\nThread2 joined, it returned %s",(char *)result2);
+printf(" %d\n",sum1);
+printf("Thread id =%d",tid2);
+printf("\nThread ID=%u",(unsigned int)pthread_self());
+system("ps -al");
+exit(EXIT_SUCCESS);
+}
+int sum(int arg1)
+{
+int i,j;
+printf ("Enter the value of 1st number");
+scanf("%d",&i);
+printf ("Enter the value of 1st number");
+scanf("%d",&j);
+sum1=i+j;
+printf("\nThread ID=%u",(unsigned int)pthread_self());
+printf("\nThe process ID=%d",getpid());
+printf("\nParent process ID=%d",getppid());
+pthread_exit("The addition of two number is:");
+}
+
+
+OUTPUT:
+
+Thread ID=3078346432
+The process ID=6556
+The parent process ID=4860Enter the value of 1st number10
+Enter the value of 1st number32
+
+Thread ID=3078343536
+The process ID=6556
+Parent process ID=4860
+ The sum of two number is=42
+ waiting for thread to finish..........
+
+Thread2 joined, it returned The addition of two number is: 42
+Thread id =-1216623760
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S   623  2689  2626  0  80   0 -  3092 poll_s pts/3    00:00:00 vim
+0 S   622  4689  2725  0  80   0 -  3164 poll_s pts/5    00:00:00 vim
+4 S     0  5507  5445  0  80   0 -  1100 skb_re pts/18   00:00:00 ping
+4 S     0  5527  5512  0  80   0 -  1100 skb_re pts/19   00:00:00 ping
+0 S   611  5639  5537  0  80   0 -  3094 poll_s pts/15   00:00:00 vim
+0 S   597  5912  5876  0  80   0 -  3094 poll_s pts/17   00:00:00 vim
+0 S   615  5925  4491  0  80   0 -  3095 poll_s pts/2    00:00:00 vim
+0 S   614  5987  4466  0  80   0 -  3094 poll_s pts/6    00:00:00 vim
+0 S   618  6184  6080  0  80   0 -  3094 poll_s pts/24   00:00:00 vim
+0 S   599  6326  6150  0  80   0 -  3061 poll_s pts/21   00:00:00 vim
+0 S   604  6333  2807  0  80   0 -  3094 poll_s pts/7    00:00:00 vim
+0 S   621  6337  6048  0  80   0 -  3116 poll_s pts/23   00:00:00 vim
+0 S   612  6379  6258  0  80   0 -  3094 poll_s pts/22   00:00:00 vim
+0 S   606  6497  6283  0  80   0 -  3094 poll_s pts/25   00:00:00 vim
+0 S   602  6499  4645  0  80   0 -  3061 poll_s pts/11   00:00:00 vim
+0 S   624  6503  4703  0  80   0 -  3104 poll_s pts/12   00:00:00 vim
+0 S   596  6545  4974  0  80   0 -  3094 poll_s pts/4    00:00:00 vim
+0 S   607  6556  4860  0  80   0 -  2873 wait   pts/0    00:00:00 prgm4
+0 R   607  6565  6556  1  80   0 -  1187 -      pts/0    00:00:00 ps
+Thread ID=3078346432

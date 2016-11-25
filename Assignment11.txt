@@ -1,0 +1,49 @@
+-----------------
+| Assignment 11 |
+-----------------
+
+
+**Source Code**
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+int main()
+{
+int res;
+int pipes[2];
+char msg[1024];
+char buffer[BUFSIZ+1];
+pid_t pid;
+printf("Enter Data\n");
+scanf("%s",&msg);
+memset(buffer,'\0',sizeof(buffer));
+if(pipe(pipes)==0)
+{
+pid=fork();
+if (pid==-1)
+{
+fprintf(stderr, "Fork failure");
+exit(EXIT_FAILURE);
+}
+if(pid==0)
+{
+res= read(pipes[0], buffer, BUFSIZ);
+printf("processid %d Read %d bytes: %s from parent process%d\n",getpid(),res, buffer,getppid());
+exit(EXIT_SUCCESS);
+}
+else
+{
+res=write(pipes[1],msg,strlen(msg));
+printf("Processid %d Wrote %d bytes\n",getpid(),res);
+sleep(10);
+}
+}
+exit(EXIT_SUCCESS);
+}
+
+**Output**
+Enter Data
+abc
+Processid 1568 Wrote 3 bytes
+processid 1569 Read 3 bytes: abc from parent process1568

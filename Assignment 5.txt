@@ -1,0 +1,66 @@
+Write C program using thread concept to count no of character entered from the keyboard and also utilize the concept of semaphore for thread synchronization.
+
+PROGRAM
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <semaphore.h>
+void *count(void *arg);
+sem_t sem;
+char arr[100];
+int main() {
+	int res;
+	pthread_t tid1;
+	void *result;
+	res=sem_init(&sem,0,0);
+	if(res!=0) {
+		perror("Semaphore creation failed");
+		exit(EXIT_FAILURE);
+	}
+	res=pthread_create(&tid1,NULL,count,NULL);
+	if(res!=0) {
+		perror("Thread creation failed");
+		exit(EXIT_FAILURE);
+	}
+	printf("Enter some text (Enter End to Finish)\n\n");
+	while(strncmp("end",arr,3)!=0) {
+		fgets(arr,100,stdin);
+		sem_post(&sem);
+	}
+	printf("\nWaiting for finish\n");
+	res=pthread_join(tid1,&result);
+	if(res!=0) {
+		perror("Thread joining failed");
+		exit(EXIT_FAILURE);
+	}
+	printf("Thread joined %s\n",(char *)result);
+	sem_destroy(&sem);
+	exit(EXIT_SUCCESS);
+}
+void *count(void *arg) {
+	sem_wait(&sem);
+	while(strncmp("end",arr,3)!=0) {
+		printf("No of character %d\n",strlen(arr)-1);
+		sem_wait(&sem);
+	}
+	pthread_exit("\n\n");
+}
+
+OUTPUT
+
+Enter some text (Enter End to Finish)
+
+Hello World
+No of character 11
+Shaunak
+No of character 7
+Technology
+No of character 10
+end
+
+Waiting for finish
+Thread joined

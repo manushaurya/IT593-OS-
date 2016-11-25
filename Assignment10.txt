@@ -1,0 +1,47 @@
+------------------
+| Assignment#10  |
+------------------
+**Source Code**
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+int main()
+{
+FILE *rf;
+char buffer[1024];
+int res;
+memset(buffer, '\0', sizeof(buffer));
+rf = popen("ls -l", "r");
+if (rf != NULL)
+{
+res = fread(buffer, sizeof(char), 1024, rf);
+if (res > 0)
+{
+printf("Output was for the process %d:-\n%s\n",getpid(),buffer);
+}
+pclose(rf);
+exit(EXIT_SUCCESS);
+}
+exit(EXIT_FAILURE);
+}
+
+
+** Output **
+Output was for the process 825:-
+total 200
+-rw-r--r-- 1 13000214060 IT_14_18_A2   92 Aug  8 12:45 abc.txt
+-rwxr-xr-x 1 13000214060 IT_14_18_A2 5526 Sep 19 12:51 Assignment1
+-rwxr-xr-x 1 13000214060 IT_14_18_A2 5400 Nov 17 11:35 Assignment10
+-rw-r--r-- 1 13000214060 IT_14_18_A2  395 Nov 17 11:34 Assignment10.c
+-rw-r--r-- 1 13000214060 IT_14_18_A2  514 Aug 29 11:57 Assignment1.c
+-rwxr-xr-x 1 13000214060 IT_14_18_A2 5526 Sep 19 12:53 Assignment2
+-rw-r--r-- 1 13000214060 IT_14_18_A2  487 Aug 29 12:35 Assignment2.c
+-rwxr-xr-x 1 13000214060 IT_14_18_A2 5955 Oct 17 12:11 Assignment3
+-rw-r--r-- 1 13000214060 IT_14_18_A2  742 Oct 17 12:11 Assignment3.c
+-rwxr-xr-x 1 13000214060 IT_14_18_A2 6025 Sep 19 12:06 Assignment4
+-rw-r--r-- 1 13000214060 IT_14_18_A2  910 Sep 19 12:06 Assignment4.c
+-rwxr-xr-x 1 13000214060 IT_14_18_A2 8022 Oct 17 12:18 Assignment5
+-rw-r--r-- 1 13000214060 IT_14_18_A2 1020 Oct 24 11:51 Assignment5.c
+-rw-r--r-- 1 13000214060 IT_14_18_A2  141 Oct 24 12:40 assignment6.sh
+-rw-r--r-- 1 13000214060 IT_14_18_A2  175 Oct 24 13:26 assignme

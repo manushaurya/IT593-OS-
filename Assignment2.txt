@@ -1,0 +1,74 @@
+SOURCE CODE-
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+int main()
+{
+pid_t pid;
+char *message;
+int n;
+printf("fork program starting\n");
+pid = fork();
+switch(pid)
+{
+case -1:
+perror("fork failed");
+exit(1);
+case 0:
+message = "This is the child";
+n = 3;
+printf("c-id=%d",getpid());
+break;
+default:
+message = "This is the parent";
+n = 5;
+printf("c-id=%d",getpid());
+break;
+}
+for(; n > 0; n--) {
+puts(message);
+sleep(1);
+}
+system("ps -l T");
+exit(0);
+}
+
+
+OUTUT-
+
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+4 S   582  5019  5015  0  80   0 -  1297 wait   pts/7      0:00 -bash
+0 S   582  5513  5019  0  80   0 -   477 hrtime pts/7      0:00 ./a.out
+1 S   582  5514  5513  0  80   0 -   477 wait   pts/7      0:00 ./a.out
+0 R   582  5516  5514  0  80   0 -  1187 -      pts/7      0:00 ps -l T
+fork program starting
+c-id=5514This is the child
+This is the child
+This is the child
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+4 S   582  5019  5015  0  80   0 -  1297 wait   pts/7      0:00 -bash
+0 S   582  5513  5019  0  80   0 -   477 wait   pts/7      0:00 ./a.out
+1 Z   582  5514  5513  0  80   0 -     0 exit   pts/7      0:00 [a.out] <defunct>
+0 R   582  5517  5513  0  80   0 -  1187 -      pts/7      0:00 ps -l T
+fork program starting
+c-id=5513This is the parent
+This is the parent
+This is the parent
+This is the parent
+This is the parent
+
+Answer 1- Shown above
+
+Answer 2-
+ Process with PID=5514
+
+Answer 3-
+ If we change the value of n in case 0 and case 1 then the parent dies earlier than its parent terminate
+
+Answer 4-
+ dash or init
+
+Answer 5-
+ The status of Orphan process can be obtained by getting 1 in F column
+1 S   582  5514  5513  0  80   0 -   477 wait   pts/7      0:00 ./a.out

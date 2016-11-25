@@ -1,0 +1,69 @@
+SOURCE CODE-
+
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+int main()
+{
+pid_t pid;
+char *message;
+int n;
+printf("fork program starting\n");
+pid = fork();
+switch(pid)
+{
+case -1:
+perror("fork failed");
+exit(1);
+case 0:
+message = "This is the child";
+n = 5;
+printf("c-id=%d",getpid());
+break;
+default:
+message = "This is the parent";
+n = 3;
+printf("c-id=%d",getpid());
+break;
+}
+for(; n > 0; n--) {
+puts(message);
+sleep(1);
+}
+system("ps -l T");
+exit(0);
+}
+
+
+OUTPUT-
+
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+4 S   582  2670  2667  0  80   0 -  1297 wait   pts/12     0:00 -bash
+0 S   582  4260  2670  0  80   0 -   477 wait   pts/12     0:00 ./a.out
+1 S   582  4261  4260  0  80   0 -   477 hrtime pts/12     0:00 ./a.out
+0 R   582  4262  4260  0  80   0 -  1187 -      pts/12     0:00 ps -l T
+fork program starting
+c-id=4260This is the parent
+This is the parent
+This is the parent
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+4 S   582  2670  2667  0  80   0 -  1297 n_tty_ pts/12     0:00 -bash
+1 S   582  4261     1  0  80   0 -   477 wait   pts/12     0:00 ./a.out
+0 R   582  4263  4261  0  80   0 -  1186 -      pts/12     0:00 ps -l T
+fork program starting
+c-id=4261This is the child
+This is the child
+This is the child
+This is the child
+This is the child
+
+Answer 1-
+PID of child Process is-4261
+
+Answer 2-
+PID of Parent process is-4260
+
+Answer 3-
+This PID isn't changing because the program is running on the bash and then bash is always running on the background, so PID is same until we terminate the bash.
+The bash is the Parent Process. Everytime we create the process it will create new PID
